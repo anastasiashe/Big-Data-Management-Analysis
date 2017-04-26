@@ -8,7 +8,7 @@ from pyspark.sql import HiveContext
 
 
 CB_FN = '/tmp/citibike.csv'
-Taxi_FN = '/tmp/yellow.csv'
+Taxi_FN = '/tmp/yellow.csv.gz'
 
 def extractRides(partId, parts): # parts is a list of records 
     if partId==0:
