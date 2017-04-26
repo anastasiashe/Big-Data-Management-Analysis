@@ -10,9 +10,6 @@ from pyspark.sql import HiveContext
 CB_FN = '/tmp/citibike.csv'
 Taxi_FN = '/tmp/yellow.csv'
 
-bike = sc.textFile(CB_FN, use_unicode=False).cache() 
-taxi = sc.textFile(Taxi_FN, use_unicode=False).cache()
-
 def extractRides(partId, parts): # parts is a list of records 
     if partId==0:
         parts.next() #skip the first line 
@@ -42,6 +39,9 @@ def extractTrips(partId, parts): # parts is a list of records
 
 def main(sc):
     spark = HiveContext(sc)
+
+    bike = sc.textFile(CB_FN, use_unicode=False).cache()
+    taxi = sc.textFile(Taxi_FN, use_unicode=False).cache()
 
     brides = bike.mapPartitionsWithIndex(extractRides) # similar to map partitions, allows to skip the header row
     ttrips = taxi.mapPartitionsWithIndex(extractTrips) # similar to map partitions, allows to skip the header row
