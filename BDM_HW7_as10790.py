@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from pyspark.sql import SQLContext, Row
-from pyspark.sql.functions import unix_timestamp
+from pyspark.sql.functions import *
 from pyspark import SparkContext
 from pyspark.sql import HiveContext
 
@@ -18,9 +18,10 @@ def extractRides(partId, parts): # parts is a list of records
     for row in reader:
         date = row[3].split(' ')[0]
         time = row[3].split(' ')[1].split('+')[0]
-        station, lat, lon = row[6], row[7], row[8]
+        station = row[6]
+        bikeId = row[13]
         if '2015-02-01' in date and station == 'Greenwich Ave & 8 Ave':
-            yield Row(time)
+            yield Row(bikeId, time)
 
 def extractTrips(partId, parts): # parts is a list of records
     if partId==0:
@@ -52,7 +53,7 @@ def main(sc):
     timeFmt = "HH:mm:ss"
     interval = unix_timestamp(brides_df.rides, format = timeFmt) - unix_timestamp(ttrips_df.trips, format = timeFmt)
 
-    ridesTrips = brides_df.join(ttrips_df).filter((interval >= 0) & (interval <= 600)).select('rides')
+    ridesTrips = brides_df.join(ttrips_df).filter((interval > 0) & (interval < 600)).select('id')
 
     print ridesTrips.dropDuplicates().count()
 
