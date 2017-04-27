@@ -47,7 +47,7 @@ def main(sc):
     brides = bike.mapPartitionsWithIndex(extractRides) # similar to map partitions, allows to skip the header row
     ttrips = taxi.mapPartitionsWithIndex(extractTrips) # similar to map partitions, allows to skip the header row
 
-    brides_df = brides.toDF(['rides'])
+    brides_df = brides.toDF(['id', 'rides'])
     ttrips_df = ttrips.toDF(['trips'])
 
     timeFmt = "HH:mm:ss"
